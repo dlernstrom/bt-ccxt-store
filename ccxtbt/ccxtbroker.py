@@ -222,7 +222,11 @@ class CCXTBroker(with_metaclass(MetaCCXTBroker, BrokerBase)):
         created = int(data.datetime.datetime(0).timestamp()*1000)
         # Extract CCXT specific params if passed to the order
         params = params['params'] if 'params' in params else params
-        params['created'] = created  # Add timestamp of order creation for backtesting
+        ''' 
+        The line below was commented out to avoid sending the 'created' parameter to Binance which causes the parsing error below (this workaround is only valid for Live trading):
+        # ccxt.base.errors.ExchangeError: binance {"code":-1104,"msg":"Not all sent parameters were read; read '10' parameter(s) but was sent '11'."}
+        '''
+        # params['created'] = created  # Add timestamp of order creation for backtesting
         ret_ord = self.store.create_order(symbol=data.p.dataname, order_type=order_type, side=side,
                                           amount=amount, price=price, params=params)
 
